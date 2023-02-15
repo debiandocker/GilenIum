@@ -1,5 +1,4 @@
-from json import JSONDecodeError
-import pandas as pd
+import sys
 import os
 import time
 import requests
@@ -12,22 +11,17 @@ from selenium.webdriver.common.keys import Keys
 from bs4 import BeautifulSoup
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.action_chains import ActionChains
-import openpyxl
-from openpyxl import load_workbook
-import xlsxwriter
-import argparse
-import json
-import re
-import xml.etree.ElementTree as ElT
-import tqdm
+from dotenv import load_dotenv
+
 EDGE_DRIVER = r'msedgedriver.exe'
 
-# def login_info():
-#     with open("usernamesPasswords.txt", "r") as infile:
-#         data = [line.rstrip().split(":") for line in infile]
-#         username = data[1][0]
-#         password = data[1][1]
-#     return username, password
+
+
+# env_path='.env'
+#load_dotenv(dotenv_path=env_path)
+load_dotenv()
+USER=os.getenv("USER")
+PASSWORD=os.getenv("PASSWORD")
 
 
 s = requests.Session()
@@ -60,7 +54,7 @@ wait.until(EC.url_contains(waitLoginURL))
 nameWait = WebDriverWait(browser, 20)
 
 nameWait.until(EC.visibility_of_any_elements_located((By.ID, r"idp-discovery-username")))
-browser.find_element(By.NAME, r"username").send_keys(r"debayand@juniper.net")
+browser.find_element(By.NAME, r"username").send_keys()
 browser.find_element(By.XPATH, r"//input[@type='submit' and @value='Next']").click()
 
 wait2 = WebDriverWait(browser, 300)
@@ -68,10 +62,10 @@ ADaitLoginURL = AAD_AUTHORITY_HOST_URI + "/" + AAD_TENANT_ID + "/saml2"
 wait2.until(EC.url_contains(ADaitLoginURL))
 ADnameWait = WebDriverWait(browser, 20)
 ADnameWait.until(EC.visibility_of_any_elements_located((By.NAME, r"loginfmt")))
-browser.find_element(By.NAME, r"loginfmt").send_keys(r'debayand@juniper.net')
+browser.find_element(By.NAME, r"loginfmt").send_keys(USER)
 browser.find_element(By.XPATH, r"//input[@type='submit' and @value='Next']").click()
 wait2.until(EC.visibility_of_any_elements_located((By.NAME, r"passwd")))
-browser.find_element(By.ID, r"i0118").send_keys(r'Yqxv9DAP7pf8ZUu')
+browser.find_element(By.ID, r"i0118").send_keys(PASSWORD)
 browser.find_element(By.XPATH, r"//input[@type='submit' and @value='Sign in']").click()
 
 time.sleep(3)
