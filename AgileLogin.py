@@ -17,7 +17,11 @@ import xlsxwriter
 import argparse
 import json
 import re
+from dotenv import load_dotenv
 EDGE_DRIVER = r'msedgedriver.exe'
+load_dotenv()
+USER=os.getenv("USER")
+PASSWORD=os.getenv("PASSWORD")
 
 s = requests.Session()
 # Set correct user agent
@@ -57,10 +61,10 @@ ADaitLoginURL = AAD_AUTHORITY_HOST_URI + "/" + AAD_TENANT_ID + "/saml2"
 wait2.until(EC.url_contains(ADaitLoginURL))
 ADnameWait = WebDriverWait(browser, 20)
 ADnameWait.until(EC.visibility_of_any_elements_located((By.NAME, r"loginfmt")))
-browser.find_element(By.NAME, r"loginfmt").send_keys(r'debayand@juniper.net')
+browser.find_element(By.NAME, r"loginfmt").send_keys(USER)
 browser.find_element(By.XPATH, r"//input[@type='submit' and @value='Next']").click()
 wait2.until(EC.visibility_of_any_elements_located((By.NAME, r"passwd")))
-browser.find_element(By.ID, r"i0118").send_keys(r'Yqxv9DAP7pf8ZUu')
+browser.find_element(By.ID, r"i0118").send_keys(PASSWORD)
 browser.find_element(By.XPATH, r"//input[@type='submit' and @value='Sign in']").click()
 
 time.sleep(3)

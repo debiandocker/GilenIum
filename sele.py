@@ -16,6 +16,10 @@ import argparse
 import json
 import re
 EDGE_DRIVER = r'msedgedriver.exe'
+from dotenv import load_dotenv
+load_dotenv()
+USER=os.getenv("USER")
+PASSWORD=os.getenv("PASSWORD")
 
 s = requests.Session()
 # Set correct user agent
@@ -44,10 +48,10 @@ waitLoginURL = AAD_AUTHORITY_HOST_URI + "/" + AAD_TENANT_ID + "/saml2"
 wait.until(EC.url_contains(waitLoginURL))
 nameWait = WebDriverWait(browser, 20)
 nameWait.until(EC.visibility_of_any_elements_located((By.NAME, 'loginfmt')))
-browser.find_element(By.NAME, 'loginfmt').send_keys(r'debayand@juniper.net')
+browser.find_element(By.NAME, 'loginfmt').send_keys(USER)
 browser.find_element(By.XPATH, "//input[@type='submit' and @value='Next']").click()
 wait.until(EC.visibility_of_any_elements_located((By.NAME, 'passwd')))
-browser.find_element(By.ID, 'i0118').send_keys(r'Yqxv9DAP7pf8ZUu')
+browser.find_element(By.ID, 'i0118').send_keys(PASSWORD)
 browser.find_element(By.XPATH, "//input[@type='submit' and @value='Sign in']").click()
 
 time.sleep(3)
