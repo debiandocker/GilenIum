@@ -144,7 +144,10 @@ for jpnval in os.listdir(download_dir):
                             time.sleep(7)
                             inputfile.send_keys(filep)
                             time.sleep(5)
-                        browser.find_element(By.XPATH,"//a[@id='uploadFilesUM']").click()                    
+                        try:
+                            browser.find_element(By.XPATH,"//a[@id='uploadFilesUM']").click()
+                        except:
+                            print("already uploading")                    
                         time.sleep(15)
                         browser.switch_to.window(browser.window_handles[-1])
                     time.sleep(2)
@@ -152,60 +155,6 @@ for jpnval in os.listdir(download_dir):
                 time.sleep(4)
 
 
-
-                                     
-# except:
-#                 firstlink = WebDriverWait(browser,20).until(EC.element_to_be_clickable((By.XPATH, "(//a[@class='image_link'])[1]")))
-#                 firstlink.click()
-#                 WebDriverWait(browser,20).until(EC.element_to_be_clickable((By.XPATH,"//div[@id='tabsDiv']/ul/li[4]/a"))).click()
-#                 all_mpns = WebDriverWait(browser,20).until(EC.visibility_of_all_elements_located((By.XPATH,"//tr[@class='GMDataRow']/td[5]/a[@class='image_link']")))
-#                 for eachmpn in all_mpns:               
-#                     eachmpn.click()
-#                     WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.XPATH,"//div[@id='tabsDiv']/ul/li[4]/a"))).click()
-#                     WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.XPATH,"//a[@id='MSG_AddAttachment_2']"))).click()                                         
-#                     time.sleep(5)
-#                     pathname= os.path.join(download_dir,jpnVal)
-#                     for root, dirs, files in os.walk(pathname):                
-#                         for j in files:                 
-#                             filename = os.path.join(root,j)
-#                             time.sleep(10)
-#                             try:
-#                                 inputfile = browser.find_element(By.XPATH,"//div/span/a[@id='browserFiles']/input[@type='file']")
-#                                 time.sleep(3)
-#                                 inputfile.send_keys(filename)
-#                                 time.sleep(5)
-#                             except:
-#                                 print("no mpn found for {}".format(jpnVal))
-#                     WebDriverWait(browser,20).until(EC.visibility_of_element_located((By.XPATH,"//a[@id='uploadFilesUM']"))).click()                         
-#                 WebDriverWait(browser,20).until(EC.element_to_be_clickable((By.XPATH, "//ul[@class='breadcrumbs']/li[2]"))).click()
-     
-
-#         except: 
-#             WebDriverWait(browser,20).until(EC.element_to_be_clickable((By.XPATH,"//div[@id='tabsDiv']/ul/li[4]/a"))).click()
-#             all_mpns = WebDriverWait(browser,20).until(EC.visibility_of_all_elements_located((By.XPATH,"//tr[@class='GMDataRow']/td[5]/a[@class='image_link']")))
-#             for eachmpn in all_mpns:               
-#                 eachmpn.click()
-#                 WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.XPATH,"//div[@id='tabsDiv']/ul/li[4]/a"))).click()
-#                 WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.XPATH,"//a[@id='MSG_AddAttachment_2']"))).click()                                         
-#                 time.sleep(5)
-#                 pathname= os.path.join(download_dir,jpnVal)
-#                 for root, dirs, files in os.walk(pathname):                
-#                     for j in files:                 
-#                         filename = os.path.join(root,j)
-#                         time.sleep(10)
-#                         try:
-#                             inputfile = browser.find_element(By.XPATH,"//div/span/a[@id='browserFiles']/input[@type='file']")
-#                             time.sleep(3)
-#                             inputfile.send_keys(filename)
-#                             time.sleep(5)
-#                         except:
-#                             print("no mpn found for {}".format(jpnVal))
-#                 WebDriverWait(browser,20).until(EC.visibility_of_element_located((By.XPATH,"//a[@id='uploadFilesUM']"))).click()                           
-#             WebDriverWait(browser,20).until(EC.element_to_be_clickable((By.XPATH, "//ul[@class='breadcrumbs']/li[2]"))).click()
-                                 
-                        
-# except:
-#     print("entire wrong loop")
     time.sleep(2)
 
     browser.switch_to.window(browser.window_handles[0])
