@@ -19,15 +19,12 @@ from bs4 import BeautifulSoup
 from selenium.common.exceptions import NoSuchElementException, TimeoutException, StaleElementReferenceException
 from selenium.webdriver.common.action_chains import ActionChains
 from dotenv import load_dotenv
-
+import shutil
 load_dotenv()
 USER=os.getenv("USER")
 PASSWORD=os.getenv("PASSWORD")
 
-
-# # unicode_chars = 'å∫ç'
 EDGE_DRIVER = r'msedgedriver.exe'
-validState = ["Active", "Prod_IPQ", "Comp_IPQ", "EOL_Notified", "LTB"]
 
 
 def cleanFilename(sourcestring,  removestring =" #%:/,.\\[]<>*(?)"):
@@ -45,7 +42,7 @@ AAD_AUTHORITY_HOST_URI = r'https://login.microsoftonline.com'
 AAD_TENANT_ID = r'bea78b3c-4cdb-4130-854a-1d193232e5f4'
 browserOptions = EdgeOptions()
 browserOptions.add_experimental_option("prefs", {
-    "download.default_directory": r'C:\Day-to-Day\MY_WORK_OTHER\Sele\downloadsFiles\\',
+    "download.default_directory": r'C:\Day-to-Day\MY_WORK_OTHER\Sele\Powerspec',
     "download.prompt_for_download": False,
     "download.directory_upgrade": True,
     "safebrowsing.enabled": True
@@ -58,7 +55,7 @@ browserOptions.add_argument("--disable-software-rasterizer")
 browserOptions.add_argument("--disable-gpu")
 
 browser = Edge(executable_path=EDGE_DRIVER, options=browserOptions)
-download_dir = r'C:\Day-to-Day\MY_WORK_OTHER\Sele\downloadsFiles'
+download_dir = r'C:\Day-to-Day\MY_WORK_OTHER\Sele\Powerspec'
 
 selenium_user_agent = browser.execute_script("return navigator.userAgent;")
 s.headers.update({"user-agent": selenium_user_agent})
@@ -98,86 +95,94 @@ wait3 = WebDriverWait(browser, 300)
 wait3LoginURL = r"https://agileplm.juniper.net/Agile/PLMServlet"
 
 wait3.until(EC.url_contains(wait3LoginURL))
+df = pd.read_excel(r"C:\Day-to-Day\MY_WORK_OTHER\Sele\fold\agile_740_active.xlsx")
+fd = df[(df['MPN_LC']=='Active')|(df['MPN_LC']=='Comp_IPQ')]
+jpn = fd.Number.drop_duplicates()
+jpns = jpn.tolist()
 
-for jpnval in os.listdir(download_dir):
+specs=[]
+for i in jpns:
+    spec = "SPEC-"+str(i)[4:]
+    specs.append(spec)
+
+nospec = []
+for jpnval in specs:
     WebDriverWait(browser, 10).until(EC.visibility_of_element_located((By.XPATH,"//input[@id='QUICKSEARCH_STRING']"))).clear()
     WebDriverWait(browser, 10).until(EC.visibility_of_element_located((By.XPATH,"//input[@id='QUICKSEARCH_STRING']"))).send_keys(jpnval)
     WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "a#top_simpleSearch"))).click()
-    time.sleep(4)
+    time.sleep(3)
     try:
         Select(browser.find_element(By.XPATH, "//div[@id='quickClassOptions']/select[1]")).select_by_visible_text("Items".strip())
-        time.sleep(1)
-        Select(browser.find_element(By.XPATH, "//div[@id='quickClassOptions']/select[2]")).select_by_visible_text("Parts".strip())
-        time.sleep(1)
+        time.sleep(2)
+        Select(browser.find_element(By.XPATH, "//div[@id='quickClassOptions']/select[2]")).select_by_visible_text("Documents".strip())
+        time.sleep(2)
        
 
     except:
-        WebDriverWait(browser,20).until(EC.element_to_be_clickable((By.XPATH, "(//a[@class='image_link'])[1]")))
+        browser.current_window_handle
         time.sleep(3)
     else:
         WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.XPATH, "//div[@id='quickClassOptions']/a[1]"))).click()
-        time.sleep(3)        
+        time.sleep(3)              
 
     
     finally:
-        elem = WebDriverWait(browser,20).until(EC.element_to_be_clickable((By.XPATH,"//div[@id='tabsDiv']/ul/li[4]/a")))
-        if elem.is_displayed() == True:
+        try:
+            # if browser.find_element(By.ID, "header_tab_wrapper").is_displayed() == True:
+            elem = WebDriverWait(browser,20).until(EC.element_to_be_clickable((By.XPATH,"//div[@id='tabsDiv']/ul/li[5]/a")))
+            time.sleep(2)
             elem.click()
-            i=0
-            while True:
-                try:
-                    browser.implicitly_wait(20)                    
-                    rowmpn = WebDriverWait(browser,10, ignored_exceptions=(NoSuchElementException,StaleElementReferenceException)).until(EC.presence_of_all_elements_located((By.XPATH, "//div[@class='GMBodyMid']/div/table/tbody/tr[@class='GMDataRow']")))
-                    mpns=[]              
-                    for i in range(len(rowmpn)):
-                            # browser.implicitly_wait(30)
-                        x= rowmpn[i].find_element(By.XPATH, ".//td[6]")
-                        time.sleep(2)
-                        if any(x.text in y for y in validState):
-                            rowmpn[i].find_element(By.XPATH, ".//td[5]/a[@class='image_link']").click()
-                            time.sleep(1)
-                        else:
-                            break                               
-                        
-                        WebDriverWait(browser,20).until(EC.element_to_be_clickable((By.XPATH,"//div[@id='tabsDiv']/ul/li[4]/a"))).click()
-                        WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.XPATH,"//a[@id='MSG_AddAttachment_2']"))).click()
-                        time.sleep(10)
-                        WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.XPATH,"//a[@id='clearFileUM']"))).click()
+            time.sleep(1)
+            try:           
+                for files in browser.find_elements(By.XPATH, "//tr[@class='GMDataRow']/td[4]/a[@class='image_link']"):
+                    time.sleep(2)                    
+                    files.click()
+                    time.sleep(5)
+                    browser.refresh()                    
+                    # x1=0
+                    # while x1==0:
+                    #     count=0
+                    #     li = filesOnly(download_dir)
+                    #     # time.sleep(3)
+                    #     for x1 in li:
+                    #         if x1.endswith(".crdownload"):
+                    #             count = count+1        
+                    #     if count==0:
+                    #         x1=1
+                    #     else:
+                    #         x1=0
+                    # for file_name in filesOnly(download_dir):
+                    #     file_name.replace(file_name[:-4],cleanFilename(file_name[:-4]))
+                    #     pathname = os.path.join(download_dir,jpnval)
+                    #     if not os.path.exists(pathname):
+                    #         os.mkdir(pathname)                                    
+                    #     shutil.move(os.path.join(download_dir, file_name), os.path.join(pathname,file_name))                                          
+                    #     time.sleep(2)
+            except:
+                print("No attachment found")
+                time.sleep(1)
+        except:
+            print("No spec for {}".format(jpnval))            
+            nospec.append(jpnval)
 
-                        each_dir = os.path.join(download_dir,jpnval)                
-                        for root,_,files in os.walk(each_dir):
-                            filepath = []
-                            for j in files:
-                                filep = os.path.join(root,j)                    
-                                inputfile = browser.find_element(By.XPATH,"//div/span/a[@id='browserFiles']/input[@type='file']")
-                                time.sleep(1)
-                                inputfile.send_keys(filep)
-                                time.sleep(1)
-                            try:
-                                browser.find_element(By.XPATH,"//a[@id='uploadFilesUM']").click()
-                                time.sleep(12)
-                                ActionChains(browser).click(browser.find_element(By.CSS_SELECTOR, "a#lfuploadpalette_window_close")).perform()
-                                print("uploaded for {}".format(jpnval))                                
-                                                                   
-                            except NoSuchElementException as e:
-                                print("e")
-                                pass
-                        ActionChains(browser).click(browser.find_element(By.XPATH, "//ul[@class='breadcrumbs']/li[2]/a")).perform()                            
-                        time.sleep(1)
-                        rowmpn = WebDriverWait(browser,10, ignored_exceptions=(NoSuchElementException,StaleElementReferenceException)).until(EC.presence_of_all_elements_located((By.XPATH, "//div[@class='GMBodyMid']/div/table/tbody/tr[@class='GMDataRow']")))
-                    i=i+1
-                                # browser.refresh            
-                except:
-                    break
+# from openpyxl.utils.dataframe import dataframe_to_rows
+# wb = Workbook()
+# ws = wb.active
 
-                    
-
-
-
-    browser.switch_to.window(browser.window_handles[0])
-    browser.refresh()
-    browser.switch_to.window(browser.window_handles[1])
-    browser.refresh()
-    time.sleep(2)
-
-
+# for r in dataframe_to_rows(df, index=True, header=True):
+#     ws.append(r)
+# """
+# No spec for SPEC-074769
+# No spec for SPEC-074873
+# No spec for SPEC-121944
+# No spec for SPEC-008537
+# No spec for SPEC-029077
+# No spec for SPEC-029522
+# No spec for SPEC-030371
+# No spec for SPEC-049743
+# No spec for SPEC-049788
+# No spec for SPEC-051825
+# No spec for SC005103
+# No spec for 010252
+# No spec for 010365
+# """

@@ -57,11 +57,11 @@ browserOptions.add_argument("--disable-extensions")
 browserOptions.add_argument("--disable-popup-blocking")
 
 browser = Edge(executable_path=EDGE_DRIVER, options=browserOptions)
-download_dir = r"C:\Day-to-Day\MY_WORK_OTHER\Sele\downloadsFiles"
+
 
 selenium_user_agent = browser.execute_script("return navigator.userAgent;")
 s.headers.update({"user-agent": selenium_user_agent})
-
+download_dir = r"C:\Day-to-Day\MY_WORK_OTHER\Sele\downloadsFiles"
 browser.get(r'https://iam-signin.juniper.net/app/juniper_agileplm_1/exk1mv21lsoJQuzDl0h8/sso/saml')
 wait = WebDriverWait(browser, 300)
 waitLoginURL = r"https://iam-signin.juniper.net"
@@ -115,97 +115,43 @@ for jpnVal in jpns['Number']:
         time.sleep(1)
         Select(browser.find_element(By.XPATH, "//div[@id='quickClassOptions']/select[2]")).select_by_visible_text("Parts".strip())
         time.sleep(1)
-        WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.XPATH, "//div[@id='quickClassOptions']/a"))).click()
-        time.sleep(1)  
-        try:              
-            jpnpage = WebDriverWait(browser,20).until(EC.element_to_be_clickable((By.XPATH ,"//div[@id='tabsDiv']/ul/li[7]/a")))
-            jpnpage.click()  # attachments link at JPN #            
-            time.sleep(2)
-            try:           
-                for files in browser.find_elements(By.XPATH, "//tr[@class='GMDataRow']/td[4]/a[@class='image_link']"):
-                    time.sleep(2)
-                    files.click()                    
-                    x1=0
-                    while x1==0:
-                        count=0
-                        li = filesOnly(download_dir)
-                        for x1 in li:
-                            if x1.endswith(".crdownload"):
-                                count = count+1        
-                        if count==0:
-                            x1=1
-                        else:
-                            x1=0
-                    for file_name in filesOnly(download_dir):
-                        file_name.replace(file_name[:-4],cleanFilename(file_name[:-4]))
-                        pathname = os.path.join(download_dir,jpnVal)
-                        if not os.path.exists(pathname):
-                            os.mkdir(pathname)                                    
-                        shutil.move(os.path.join(download_dir, file_name), os.path.join(pathname,file_name))                                          
-                        time.sleep(2)
-            except:
-                print("No attachment found")        
-        except:
-            browser.find_element(By.XPATH, "(//a[@class='image_link'])[1]").click()
-            jpnpage = WebDriverWait(browser,20).until(EC.element_to_be_clickable((By.XPATH ,"//div[@id='tabsDiv']/ul/li[7]/a")))
-            jpnpage.click()  # attachments link at JPN #
-            
-            time.sleep(2)
-            try:           
-                for files in browser.find_elements(By.XPATH, "//tr[@class='GMDataRow']/td[4]/a[@class='image_link']"):
-                    time.sleep(2)
-                    files.click()                    
-                    x1=0
-                    while x1==0:
-                        count=0
-                        li = filesOnly(download_dir)
-                        for x1 in li:
-                            if x1.endswith(".crdownload"):
-                                count = count+1        
-                        if count==0:
-                            x1=1
-                        else:
-                            x1=0
-                    time.sleep(2)
-                    for file_name in filesOnly(download_dir):
-                        file_name.replace(file_name[:-4],cleanFilename(file_name[:-4]))
-                        pathname = os.path.join(download_dir,jpnVal)
-                        if not os.path.exists(pathname):
-                            os.mkdir(pathname)                                    
-                        shutil.move(os.path.join(download_dir, file_name), os.path.join(pathname,file_name))                                          
-                        time.sleep(2)
-            except:
-                print("No attachment found")
     except:
-            jpnpage = WebDriverWait(browser,20).until(EC.element_to_be_clickable((By.XPATH ,"//div[@id='tabsDiv']/ul/li[7]/a")))
-            jpnpage.click()  # attachments link at JPN #            
-            time.sleep(3)
-            try:           
-                for files in browser.find_elements(By.XPATH, "//tr[@class='GMDataRow']/td[4]/a[@class='image_link']"):
-                    time.sleep(2)
-                    files.click()
-                    time.sleep(1)                    
-                    x1=0
-                    while x1==0:
-                        count=0
-                        li = filesOnly(download_dir)
-                        for x1 in li:
-                            if x1.endswith(".crdownload"):
-                                count = count+1        
-                        if count==0:
-                            x1=1
-                        else:
-                            x1=0
-                    for file_name in filesOnly(download_dir):
-                        file_name.replace(file_name[:-4],cleanFilename(file_name[:-4]))
-                        pathname = os.path.join(download_dir,jpnVal)
-                        if not os.path.exists(pathname):
-                            os.mkdir(pathname)                                    
-                        shutil.move(os.path.join(download_dir, file_name), os.path.join(pathname,file_name))                                          
-                        time.sleep(3)
+        WebDriverWait(browser,20).until(EC.element_to_be_clickable((By.XPATH, "(//a[@class='image_link'])[1]")))
+        time.sleep(3)
+    else:
+        WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.XPATH, "//div[@id='quickClassOptions']/a[1]"))).click()
+        time.sleep(3)
+    finally:            
+            try:                
+                jpnpage = WebDriverWait(browser,20).until(EC.element_to_be_clickable((By.XPATH ,"//div[@id='tabsDiv']/ul/li[7]/a")))
+                jpnpage.click()  # attachments link at JPN #            
+                time.sleep(2)
+                try:           
+                    for files in browser.find_elements(By.XPATH, "//tr[@class='GMDataRow']/td[4]/a[@class='image_link']"):
+                        time.sleep(2)
+                        files.click()                    
+                        x1=0
+                        while x1==0:
+                            count=0
+                            li = filesOnly(download_dir)
+                            for x1 in li:
+                                if x1.endswith(".crdownload"):
+                                    count = count+1        
+                            if count==0:
+                                x1=1
+                            else:
+                                x1=0
+                        for file_name in filesOnly(download_dir):
+                            file_name.replace(file_name[:-4],cleanFilename(file_name[:-4]))
+                            pathname = os.path.join(download_dir,jpnVal)
+                            if not os.path.exists(pathname):
+                                os.mkdir(pathname)                                    
+                            shutil.move(os.path.join(download_dir, file_name), os.path.join(pathname,file_name))                                          
+                            time.sleep(2)
+                except:
+                    print("No attachment found")
             except:
-                print("No attachment found")
-
+                print("")        
 
 browser.close()
 

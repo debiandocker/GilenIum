@@ -41,7 +41,7 @@ AAD_AUTHORITY_HOST_URI = r'https://login.microsoftonline.com'
 AAD_TENANT_ID = r'bea78b3c-4cdb-4130-854a-1d193232e5f4'
 browserOptions = EdgeOptions()
 browserOptions.add_experimental_option("prefs", {
-    "download.default_directory": r"C:\Day-to-Day\MY_WORK_OTHER\Sele\downloadsFiles\\",
+    "download.default_directory": r"C:\Day-to-Day\MY_WORK_OTHER\Sele\Powerspec\\",
     "download.prompt_for_download": False,
     "download.directory_upgrade": True,
     "safebrowsing.enabled": True
@@ -57,7 +57,7 @@ browserOptions.add_argument("--disable-extensions")
 browserOptions.add_argument("--disable-popup-blocking")
 
 browser = Edge(executable_path=EDGE_DRIVER, options=browserOptions)
-download_dir = r"C:\Day-to-Day\MY_WORK_OTHER\Sele\downloadsFiles"
+download_dir = r"C:\Day-to-Day\MY_WORK_OTHER\Sele\Powerspec"
 
 selenium_user_agent = browser.execute_script("return navigator.userAgent;")
 s.headers.update({"user-agent": selenium_user_agent})

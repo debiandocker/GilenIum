@@ -152,7 +152,7 @@ time.sleep(2)
 
 ## if doesn't exist
 browser.find_element(By.XPATH, "//input[@id='QUICKSEARCH_STRING']").clear()
-browser.find_element(By.XPATH, "//input[@id='QUICKSEARCH_STRING']").send_keys("TIDMO6543"+ Keys.ENTER)
+browser.find_element(By.XPATH, "//input[@id='QUICKSEARCH_STRING']").send_keys("LCMXO3LF-9400C-5BG484C"+ Keys.ENTER)
 editMPN = browser.find_element(By.XPATH, "//div[@class ='rt_column']/p/a[@class='button']")
 browser.execute_script("arguments[0].click()", editMPN)
 
